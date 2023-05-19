@@ -35,10 +35,32 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.len() == 0 {
+            Person::default()
+        } else {
+            let haveComma = s.find(",");
+            if let Some(pos) = haveComma {
+                let (name_str, mut age_str) = s.split_at(pos);
+                age_str = age_str.trim_start_matches(",");
+
+                if name_str.len() == 0 {
+                    Person::default()
+                } else {
+                    if let Ok(age_int) = age_str.parse::<usize>() {
+                        Person {
+                            name: name_str.to_string(),
+                            age: age_int,
+                        }
+                    } else {
+                        Person::default()
+                    }
+                }
+            } else {
+                Person::default()
+            }
+        }
     }
 }
 
